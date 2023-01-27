@@ -24,7 +24,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 python = sys.executable
 
-client = commands.Bot(command_prefix='-', intents=intents, owner_id = 253922739709018114) # this is optional
+client = commands.Bot(command_prefix='-', intents=intents)#, owner_id = put your discord id here)
 queues = []
 blocking = False
 loop = None
@@ -34,7 +34,7 @@ load = False
 async def on_ready():
     print('bot ready')
     await client.tree.sync()
-    game = discord.Game("with the API")
+    game = discord.Game("with the API") # you can change the bot activity here
     await client.change_presence(status=discord.Status.online , activity=game)
 
 
@@ -55,7 +55,7 @@ def threaded_function(arg):
         print("running")
         sleep(1)
 
-async def sd_gen(ctx, queues):  
+async def imgmake():  
     global load
             seed = random.randint(0,4294967295)
         if (load == False):
@@ -89,7 +89,7 @@ async def sd_gen(ctx, queues):
 
 
 @client.command()
-asyncio.gather(asyncio.to_thread(await sd_gen()) #not ready command needs rewrite!!
+asyncio.gather(asyncio.to_thread(await imgmake()) #not ready command needs rewrite!!
 
 
 
