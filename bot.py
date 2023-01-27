@@ -30,6 +30,7 @@ blocking = False
 loop = None
 load = False
 
+
 @client.event
 async def on_ready():
     print('bot ready')
@@ -49,20 +50,20 @@ def load_onnx_model():
     provider="DmlExecutionProvider",
     scheduler =lms)
     print("ONNX pipeline is loadable")
+    global prompt
 
 def threaded_function(arg):
     for i in range(arg):
         print("running")
         sleep(1)
 
-async def imgmake():  
-    global load
-            seed = random.randint(0,4294967295)
+async def imgmake(ctx, prompt):  
+        global load
         if (load == False):
             load_onnx_model()
             load = True 
-        generator = np.random.RandomState(seed)
-        
+            
+        generator = np.random.RandomState(random.randint(0,4294967295))
         image = pipe(prompt,
                 negative_prompt = None,
                 num_inference_steps=30,
@@ -89,7 +90,8 @@ async def imgmake():
 
 
 @client.command()
-asyncio.gather(asyncio.to_thread(await imgmake()) #not ready command needs rewrite!!
+async def creatimg(ctx, prompt):
+    await imgmake(ctx, prompt) #not ready command needs rewrite!!
 
 
 
