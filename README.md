@@ -11,4 +11,4 @@ Commands
 + -creatimg "prompt"
 
 
-[grafik](https://user-images.githubusercontent.com/70102430/215344705-f9389261-d270-440e-845a-d1da83eee5e7.png)
+![grafik](https://user-images.githubusercontent.com/70102430/215344705-f9389261-d270-440e-845a-d1da83eee5e7.png)
