@@ -1,7 +1,7 @@
-__version__ = "0.6"
-__all__ = ["Discord-diffuser"]
+__version__ = "0.6.5"
+__all__ = ["Discordbot-stable_diffusion"]
 __author__ = "SimolZimol"
-__home_page__ = "https://github.com/SimolZimol/Discordbot-diffuser"
+__home_page__ = "https://github.com/SimolZimol/Discord-Bot-stable-diffusion-AMD-bot"
 
 import discord
 import os, sys
@@ -18,16 +18,12 @@ import time
 from time import sleep
 from diffusers import OnnxStableDiffusionPipeline
 from diffusers.schedulers import DDIMScheduler, LMSDiscreteScheduler, PNDMScheduler
-
-TOKEN = 'put token here'
+#TOKEN = 'put token here'
 intents = discord.Intents.default()
 intents.message_content = True
 python = sys.executable
 
 client = commands.Bot(command_prefix='-', intents=intents)#, owner_id = put your discord id here)
-queues = []
-blocking = False
-loop = None
 load = False
 
 
@@ -39,7 +35,7 @@ async def on_ready():
     await client.change_presence(status=discord.Status.online , activity=game)
 
 
-onnx_dir = 'PUT YOUR onnx folder here like C:/onnx_model/stable-diffusion-v1-4'
+onnx_dir = 'PUT YOUR onnx folder here like C:/onnx_model/stable-diffusion-v1-4/'
 
 lms = LMSDiscreteScheduler(beta_start=0.00085, beta_end=0.012, beta_schedule="scaled_linear")
 
@@ -62,7 +58,7 @@ async def imgmake(ctx, prompt):
         if (load == False):
             load_onnx_model()
             load = True 
-            
+
         generator = np.random.RandomState(random.randint(0,4294967295))
         image = pipe(prompt,
                 negative_prompt = None,
@@ -78,9 +74,7 @@ async def imgmake(ctx, prompt):
         form = ".png"
         global filename
         filename = "_".join([basename, suffix, form])
-        global out
         filename2 = "_".join([basename, suffix])
-        out = "C:/discord_bot/" #this path must be the same as where the script is because all images must be saved directly to the folder where the script is located. 
         global fp
         fp = "png/" + filename
         img_name = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M') + ".png"
@@ -91,9 +85,10 @@ async def imgmake(ctx, prompt):
 
 @client.command()
 async def creatimg(ctx, prompt):
-    await imgmake(ctx, prompt) #not ready command needs rewrite!!
+    await ctx.typing()
+    await imgmake(ctx, prompt)
 
-
+# i will add more commands and functions later
 
 
 client.run(TOKEN)
