@@ -18,7 +18,8 @@ import time
 from time import sleep
 from diffusers import OnnxStableDiffusionPipeline
 from diffusers.schedulers import DDIMScheduler, LMSDiscreteScheduler, PNDMScheduler
-#TOKEN = 'put token here'
+
+TOKEN = 'put token here'
 intents = discord.Intents.default()
 intents.message_content = True
 python = sys.executable
