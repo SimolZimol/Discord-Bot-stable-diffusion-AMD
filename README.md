@@ -6,6 +6,8 @@
 ## How to install
 At the moment you need to get an ready to use onnx model, put your onnx model in the onnx_model folder and change the bot.py onnx_dir to the onnx model folder you put in (C:/bot/onnx_model/stable-diffusion-v1-4)
 
+if you need help dm me on discord for help (SimolZimol#5242)
+
 ## How to use
 Commands
 + -creatimg "prompt"
