@@ -1,4 +1,12 @@
 # Discordbot-diffuser (AMD)
+
+| Version | Supported          |
+| ------- | ------------------ |
+| AMD GPU | :white_check_mark: |
+| Nvidia GPU  | :x: |
+| AMD CPU |:white_check_mark: |
+| Intel CPU |❓ |
+
 ## System Requirements
 + Python 3.7 , 3.8 , 3.9 or 3.10 (https://www.python.org/)
 + you will need git (https://git-scm.com/downloads)
@@ -14,3 +22,4 @@ Commands
 
 
 ![grafik](https://user-images.githubusercontent.com/70102430/215344705-f9389261-d270-440e-845a-d1da83eee5e7.png)
+
