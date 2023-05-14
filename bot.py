@@ -1,4 +1,4 @@
-__version__ = "0.7.3"
+__version__ = "0.7.6"
 __all__ = ["Discordbot-stable_diffusion"]
 __author__ = "SimolZimol"
 __home_page__ = "https://github.com/SimolZimol/Discord-Bot-stable-diffusion-AMD-bot"
@@ -130,17 +130,18 @@ def download_sd_model(model_path):
         print(model_name)
     convert_stable_diffusion_checkpoint_to_onnx.convert_models(model_path, str(onnx_model_dir), onnx_opset, onnx_fp16)
     pip_uninstall('onnx')
-
-@client.command()
+    
+@client.hybrid_command()
 async def creatimg(ctx, prompt):
     await ctx.typing()
     await imgmake(ctx, prompt)
+    await ctx.send(ctx, prompt)
 
-@client.command()
-async def Load_Model(ctx, model_):
+@client.hybrid_command()
+async def load_model(ctx, model_):
     await ctx.typing()
     load_onnx_model(model_)
-    ctx.send("ready !")
+    await ctx.send("ready !")
 
 #@client.command()
 #async def download_model(ctx, xmodel_name):
