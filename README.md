@@ -19,8 +19,10 @@ if you need help dm me on discord for help (**SimolZimol#5242**)
 ## How to use
 Commands
 + -download_model modeladress (coming soon)
-+ -Load_Model model name
++ -load_model model-name
++ /load_model model-name
 + -creatimg "prompt"
++ /creatimg prompt
 
 
 ![grafik](https://user-images.githubusercontent.com/70102430/215344705-f9389261-d270-440e-845a-d1da83eee5e7.png)
