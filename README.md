@@ -18,6 +18,8 @@ if you need help dm me on discord for help (**SimolZimol#5242**)
 
 ## How to use
 Commands
++ -download_model modeladress (coming soon)
++ -Load_Model model name
 + -creatimg "prompt"
 
 
