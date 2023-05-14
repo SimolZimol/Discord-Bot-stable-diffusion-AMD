@@ -86,8 +86,8 @@ async def imgmake(ctx, prompt):
         global fp
         fp = "png/" + filename
         img_name = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M') + ".png"
-        image.save(f"{filename}")
-        await ctx.send(file=discord.File(filename))  
+        image.save(output_dir/filename)
+        await ctx.send(file=discord.File(output_dir/filename))  
     else:
         print("ONNX not ready")
     
