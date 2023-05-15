@@ -12,7 +12,12 @@
 + you will need git (https://git-scm.com/downloads)
 
 ## How to install
-At the moment you need to get an ready to use onnx model, put your onnx model in the onnx_model folder and change the bot.py onnx_dir to the onnx model folder you put in (C:/bot/onnx_model/stable-diffusion-v1-4)
+
+At the moment you need to get an ready to use onnx model, put your onnx model in the onnx_model folder. 
+First, the tokens must be inserted in the bot.py file.
+The Discord bot token is the most important part, without it the bot cannot start. The other token for huggingface is only used to download new models and is not needed for the basic functions. After inserting the Discord bot token, you can now execute the start.bat. After installing the requirements, the bot should start and "bot ready" should appear in the console. After the bot has been started, just load the model with the command /load_model modelname or -load_model model-name after this has been done successfully, the bot should now be able to make pictures. 
+
+Information the model must be reloaded every time the bot is restarted (/load_model model-name)
 
 if you need help dm me on discord for help (**SimolZimol#5242**)
 
