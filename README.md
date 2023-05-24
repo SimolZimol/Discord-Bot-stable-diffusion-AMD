@@ -30,5 +30,5 @@ Commands
 + /creatimg prompt
 
 
-![grafik](https://user-images.githubusercontent.com/70102430/215344705-f9389261-d270-440e-845a-d1da83eee5e7.png)
+![grafik](https://github.com/SimolZimol/Discord-Bot-stable-diffusion-AMD/assets/70102430/069879ac-a172-4bb2-880a-ac0c2bc6b8cf)
 
