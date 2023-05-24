@@ -11,5 +11,13 @@ Python
 | 3.8.x   | ❓ |
 | 3.7.x   | ❓                |
 
+| Version | Supported          |
+| ------- | ------------------ |
+| AMD GPU | :white_check_mark: |
+| Nvidia GPU  | :x: |
+| AMD CPU |:white_check_mark: |
+| Intel CPU |❓ |
+
+
 ## Reporting an Problem
 use the issues tab to report bugs and Vulnerability
