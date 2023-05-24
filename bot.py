@@ -1,5 +1,5 @@
-__version__ = "0.7.6"
-__all__ = ["Discordbot-stable_diffusion"]
+__version__ = "0.7.3"
+__all__ = ["Discordbot-stable_diffusion (Discord)"]
 __author__ = "SimolZimol"
 __home_page__ = "https://github.com/SimolZimol/Discord-Bot-stable-diffusion-AMD-bot"
 
@@ -9,22 +9,17 @@ from discord.ext import commands
 import asyncio
 #import aiohttp
 from discord.ext import tasks
-from huggingface_hub import _login
 import pathlib
-import hashlib
-import random
 import numpy as np
-import datetime
-import time
-import subprocess
 from time import sleep
-from diffusers import OnnxStableDiffusionPipeline
-from diffusers.schedulers import DDIMScheduler, LMSDiscreteScheduler, PNDMScheduler
+import subprocess
+import threading
+import concurrent.futures
+import nest_asyncio
 
-TOKEN = '' #Discord Token here
-token = '' #huggingface token here
+from image_generator import imgmake, load_onnx_model
 
-
+TOKEN = '' # Discord token here
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -35,120 +30,96 @@ load = False
 
 onnx_dir = pathlib.Path().absolute()/'onnx_models'
 output_dir = pathlib.Path().absolute()/'output'
-global model_
 global prompt
 
+
+
+executor = concurrent.futures.ThreadPoolExecutor()
+
+def run_imgmake(prompt):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    result = loop.run_until_complete(imgmake(prompt))
+    loop.close()
+    return result
+
+nest_asyncio.apply()
+
+# Create a queue to store image generation requests
+image_queue = asyncio.Queue()
+loop = asyncio.get_event_loop()
+
+async def process_image_queue():
+    while True:
+        # Wait for the next item in the queue
+        prompt, channel, author, model = await image_queue.get()
+        try:
+            await channel.typing()
+            
+            # Run imgmake in a separate instance
+            fp = run_imgmake(prompt)
+            
+            if fp is not None:
+                file = discord.File(fp)
+                message = await channel.send(f"Prompt: {prompt}\nAuthor: {author}\nModel: {model}", file=file)
+                await message.add_reaction('🔄')  # Add a reaction for regenerating the image
+            else:
+                await channel.send("Unable to generate the image.")
+        except Exception as e:
+            print(f"Error processing image: {e}")
+        finally:
+            # Mark the task as done
+            image_queue.task_done()
+
+# Register the process_image_queue() coroutine as an event
 @client.event
 async def on_ready():
-    print('bot ready')
-    await client.tree.sync()
-    game = discord.Game("with the API") # you can change the bot activity here
-    await client.change_presence(status=discord.Status.online , activity=game)
+    loop.create_task(process_image_queue())
+    print('Bot is ready!')
+    print(f'Logged in as: {client.user.name}')
+    print(f'Client ID: {client.user.id}')
+    print('------')
 
-lms = LMSDiscreteScheduler(beta_start=0.00085, beta_end=0.012, beta_schedule="scaled_linear")
-
-def load_onnx_model(model_):
-    global pipe
-    pipe = OnnxStableDiffusionPipeline.from_pretrained(str('onnx_models/' + model_),
-    provider="DmlExecutionProvider",
-    scheduler =lms)
-    global load
-    load = True 
-    print("ONNX pipeline is loadable")
-
-
-
-def threaded_function(arg):
-    for i in range(arg):
-        print("running")
-        sleep(1)
-
-async def imgmake(ctx, prompt):  
-
-    if (load == True):
-            
-        generator = np.random.RandomState(random.randint(0,4294967295))
-        image = pipe(prompt,
-                negative_prompt = None,
-                num_inference_steps=30,
-                height = 512,
-                width = 512,
-                guidance_scale=8.5,
-                generator = generator,
-                num_images_per_prompt = 1              
-                ).images[0]
-        basename = "Dml"
-        suffix = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-        form = ".png"
-        global filename
-        filename = "_".join([basename, suffix, form])
-        filename2 = "_".join([basename, suffix])
-        global fp
-        fp = "png/" + filename
-        img_name = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M') + ".png"
-        image.save(output_dir/filename)
-        await ctx.send(file=discord.File(output_dir/filename))  
-    else:
-        print("ONNX not ready")
-    
-
-def pip_install(lib):
-    subprocess.run(f'echo Installing {lib}...', shell=True)
-    if 'ort_nightly_directml' in lib:
-        subprocess.run(f'echo 1', shell=True)
-        subprocess.run(f'echo "{python}" -m pip install {lib}', shell=True)
-        subprocess.run(f'"{python}" -m pip install {lib} --force-reinstall', shell=True)
-    else:
-        subprocess.run(f'echo 2', shell=True)
-        subprocess.run(f'echo "{python}" -m pip install {lib}', shell=True, capture_output=True)
-        subprocess.run(f'"{python}" -m pip install {lib}', shell=True, capture_output=True)          
-
-def pip_uninstall(lib):
-    subprocess.run(f'echo Uninstalling {lib}...', shell=True)
-    subprocess.run(f'"{python}" -m pip uninstall -y {lib}', shell=True, capture_output=True)
-
-def huggingface_login(token):
-    try:
-        #output = _login._login(HfApi(), token = token)
-        output = _login._login(token = token, add_to_git_credential = True)
-        return "Login successful."
-    except Exception as e:
-        return str(e)
-
-def download_sd_model(model_path):
-    pip_install('onnx')
-    from src.diffusers.scripts import convert_stable_diffusion_checkpoint_to_onnx
-    onnx_opset = 14
-    onnx_fp16 = False
-    try:
-        model_name = model_path.split('/')[1]
-    except:
-        model_name = model_path
-    onnx_model_dir = onnx_dir/model_name 
-    if not onnx_dir.exists():
-        onnx_dir.mkdir(parents=True, exist_ok=True)
-        print(model_name)
-    convert_stable_diffusion_checkpoint_to_onnx.convert_models(model_path, str(onnx_model_dir), onnx_opset, onnx_fp16)
-    pip_uninstall('onnx')
-    
 @client.hybrid_command()
-async def creatimg(ctx, prompt):
-    await ctx.typing()
-    await imgmake(ctx, prompt)
-    await ctx.send(ctx, prompt)
+async def creatimg(ctx, *, prompt):
+    # Add the image generation request to the queue
+    await image_queue.put((prompt, ctx.channel, ctx.author, model_x))
+    await ctx.send("Image generation request added to the queue.")
+
+
+@client.event
+async def on_reaction_add(reaction, user):
+    if user.bot:
+        return
+    
+    if reaction.emoji == '🔄':  # User reacted with the refresh emoji
+        message = reaction.message
+        if message.author == client.user:  # Check if the message was sent by the bot
+            content = message.content
+            prompt = content[8:content.index('\n')]  # Extract the prompt from the message content
+            await image_queue.put((prompt, message.channel, user, model_x))
+            await message.channel.send("Image generation request added to the queue.")
+
 
 @client.hybrid_command()
 async def load_model(ctx, model_):
+    global model_x
+    model_x = model_
     await ctx.typing()
-    load_onnx_model(model_)
-    await ctx.send("ready !")
+    load_onnx_model(model_x)
+    await ctx.send("Model loaded: " + model_x)
 
-#@client.command()
+#@client.hybrid_command()
 #async def download_model(ctx, xmodel_name):
 #    await ctx.typing()
 #    download_sd_model(xmodel_name)
 
+# Run the event loop
 
-
-
-client.run(TOKEN)
+# Run the event loop
+try:
+    loop.run_until_complete(client.start(TOKEN))
+except KeyboardInterrupt:
+    loop.run_until_complete(client.logout())
+finally:
+    loop.close()
