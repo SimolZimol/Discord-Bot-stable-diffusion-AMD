@@ -1,4 +1,4 @@
-__version__ = "0.7.3"
+__version__ = "0.7.8"
 __all__ = ["Discordbot-stable_diffusion (Discord)"]
 __author__ = "SimolZimol"
 __home_page__ = "https://github.com/SimolZimol/Discord-Bot-stable-diffusion-AMD-bot"
@@ -16,6 +16,7 @@ import subprocess
 import threading
 import concurrent.futures
 import nest_asyncio
+import requests
 
 from image_generator import imgmake, load_onnx_model
 
@@ -79,6 +80,22 @@ async def on_ready():
     print(f'Logged in as: {client.user.name}')
     print(f'Client ID: {client.user.id}')
     print('------')
+            # Version check
+    version_url = "https://simolzimol.eu/version.txt"  # URL zum Abrufen der aktuellen Version
+    current_version = "beta-0.7.8"  # Aktuelle Version des Bots (Ihre Versionsnummer hier eintragen)
+
+    try:
+        response = requests.get(version_url)
+        if response.status_code == 200:
+            latest_version = response.text.strip()
+            if latest_version != current_version:
+                print(f"New version available: {latest_version}")
+            else:
+                print("Bot is up to date.")
+        else:
+            print("Unable to retrieve version information.")
+    except requests.exceptions.RequestException:
+        print("Failed to connect to version server.")
 
 @client.hybrid_command()
 async def creatimg(ctx, *, prompt):
