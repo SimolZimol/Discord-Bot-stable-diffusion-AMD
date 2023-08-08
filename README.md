@@ -19,7 +19,7 @@ The Discord bot token is the most important part, without it the bot cannot star
 
 Information the model must be reloaded every time the bot is restarted (/load_model model-name)
 
-if you need help dm me on discord for help (**SimolZimol#5242**)
+if you need help dm me on discord for help (**simolzimol**)
 
 ## How to use
 Commands
