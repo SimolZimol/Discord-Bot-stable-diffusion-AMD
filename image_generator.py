@@ -1,4 +1,4 @@
-__version__ = "0.5.7"
+__version__ = "0.5.9"
 __all__ = ["Discordbot-stable_diffusion (Bot part)"]
 __author__ = "SimolZimol"
 __home_page__ = "https://github.com/SimolZimol/Discord-Bot-stable-diffusion-AMD-bot"
@@ -17,8 +17,9 @@ import subprocess
 from time import sleep
 from diffusers import OnnxStableDiffusionPipeline
 from diffusers.schedulers import DDIMScheduler, LMSDiscreteScheduler, PNDMScheduler
+from huggingface_hub import _login
+from huggingface_hub.hf_api import HfApi, HfFolder
 
-token = '' #huggingface token here 
 
 onnx_dir = pathlib.Path().absolute() / 'onnx_models'
 output_dir = pathlib.Path().absolute() / 'output'
@@ -45,7 +46,7 @@ async def imgmake(prompt):
         generator = np.random.RandomState(random.randint(0,4294967295))
         image = pipe(prompt,
                 negative_prompt = None,
-                num_inference_steps=30,
+                num_inference_steps=25,
                 height = 512,
                 width = 512,
                 guidance_scale=8.5,
@@ -67,40 +68,9 @@ async def imgmake(prompt):
         print("ONNX not ready")
     
 
+onnx_dir = pathlib.Path().absolute()/'onnx_models'
+output_dir = pathlib.Path().absolute()/'output'
 
-
-
-
-
-
-
-def threaded_function(arg):
-    for i in range(arg):
-        print("running")
-        sleep(1)
-
-def pip_install(lib):
-    subprocess.run(f'echo Installing {lib}...', shell=True)
-    if 'ort_nightly_directml' in lib:
-        subprocess.run(f'echo 1', shell=True)
-        subprocess.run(f'echo "{python}" -m pip install {lib}', shell=True)
-        subprocess.run(f'"{python}" -m pip install {lib} --force-reinstall', shell=True)
-    else:
-        subprocess.run(f'echo 2', shell=True)
-        subprocess.run(f'echo "{python}" -m pip install {lib}', shell=True, capture_output=True)
-        subprocess.run(f'"{python}" -m pip install {lib}', shell=True, capture_output=True)          
-
-def pip_uninstall(lib):
-    subprocess.run(f'echo Uninstalling {lib}...', shell=True)
-    subprocess.run(f'"{python}" -m pip uninstall -y {lib}', shell=True, capture_output=True)
-
-def huggingface_login(token):
-    try:
-        #output = _login._login(HfApi(), token = token)
-        output = _login._login(token = token, add_to_git_credential = True)
-        return "Login successful."
-    except Exception as e:
-        return str(e)
 
 def download_sd_model(model_path):
     pip_install('onnx')
@@ -117,3 +87,27 @@ def download_sd_model(model_path):
         print(model_name)
     convert_stable_diffusion_checkpoint_to_onnx.convert_models(model_path, str(onnx_model_dir), onnx_opset, onnx_fp16)
     pip_uninstall('onnx')
+
+def huggingface_login(token):
+    try:
+        #output = _login._login(HfApi(), token = token)
+        output = _login._login(token = token, add_to_git_credential = True)
+        return "Login successful."
+    except Exception as e:
+        return str(e)
+
+def pip_install(lib):
+    subprocess.run(f'echo Installing {lib}...', shell=True)
+    if 'ort_nightly_directml' in lib:
+        subprocess.run(f'echo 1', shell=True)
+        subprocess.run(f'echo "{python}" -m pip install {lib}', shell=True)
+        subprocess.run(f'"{python}" -m pip install {lib} --force-reinstall', shell=True)
+    else:
+        subprocess.run(f'echo 2', shell=True)
+        subprocess.run(f'echo "{python}" -m pip install {lib}', shell=True, capture_output=True)
+        subprocess.run(f'"{python}" -m pip install {lib}', shell=True, capture_output=True)          
+
+def pip_uninstall(lib):
+    subprocess.run(f'echo Uninstalling {lib}...', shell=True)
+    subprocess.run(f'"{python}" -m pip uninstall -y {lib}', shell=True, capture_output=True)
+
