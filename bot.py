@@ -1,4 +1,4 @@
-__version__ = "0.7.8"
+__version__ = "0.8.1"
 __all__ = ["Discordbot-stable_diffusion (Discord)"]
 __author__ = "SimolZimol"
 __home_page__ = "https://github.com/SimolZimol/Discord-Bot-stable-diffusion-AMD-bot"
@@ -7,33 +7,33 @@ import discord
 import os, sys
 from discord.ext import commands
 import asyncio
-#import aiohttp
-from discord.ext import tasks
 import pathlib
 import numpy as np
 from time import sleep
-import subprocess
-import threading
+
 import concurrent.futures
 import nest_asyncio
 import requests
+from typing import Literal , List
 
-from image_generator import imgmake, load_onnx_model
+from discord import app_commands
+from image_generator import imgmake, load_onnx_model, download_sd_model
 
-TOKEN = '' # Discord token here
+TOKEN = ''
+inputs = ''
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.reactions = True
 python = sys.executable
 
-client = commands.Bot(command_prefix='-', intents=intents)#, owner_id = put your discord id here)
+client = commands.Bot(command_prefix='-', intents=intents)#, owner_id = )
 load = False
 
 onnx_dir = pathlib.Path().absolute()/'onnx_models'
 output_dir = pathlib.Path().absolute()/'output'
+models_list = [folder for folder in os.listdir(onnx_dir) if os.path.isdir(os.path.join(onnx_dir, folder))]
 global prompt
-
-
 
 executor = concurrent.futures.ThreadPoolExecutor()
 
@@ -80,9 +80,10 @@ async def on_ready():
     print(f'Logged in as: {client.user.name}')
     print(f'Client ID: {client.user.id}')
     print('------')
-            # Version check
+
+        # Version check
     version_url = "https://simolzimol.eu/version.txt"  # URL zum Abrufen der aktuellen Version
-    current_version = "beta-0.7.8"  # Aktuelle Version des Bots (Ihre Versionsnummer hier eintragen)
+    current_version = "beta-0.8.1"  # Aktuelle Version des Bots (Ihre Versionsnummer hier eintragen)
 
     try:
         response = requests.get(version_url)
@@ -97,12 +98,17 @@ async def on_ready():
     except requests.exceptions.RequestException:
         print("Failed to connect to version server.")
 
-@client.hybrid_command()
+
+        
+
+@client.hybrid_command(with_app_command=True)
 async def creatimg(ctx, *, prompt):
     # Add the image generation request to the queue
     await image_queue.put((prompt, ctx.channel, ctx.author, model_x))
     await ctx.send("Image generation request added to the queue.")
-
+@app_commands.describe(
+    prompt='How do you want to look your image for example "house , lake, woods"',
+)
 
 @client.event
 async def on_reaction_add(reaction, user):
@@ -117,23 +123,26 @@ async def on_reaction_add(reaction, user):
             await image_queue.put((prompt, message.channel, user, model_x))
             await message.channel.send("Image generation request added to the queue.")
 
+@client.hybrid_command(with_app_command=True)
+async def load_model(ctx,model_ : str):
+    if model_ in models_list:
+        global model_x
+        model_x = model_
+        await ctx.typing()
+        load_onnx_model(model_x)
+        await ctx.send("Model loaded: " + model_x)
+    else:
+        await ctx.send("Invalid model name. Available models: " + ", ".join(models_list))
+@app_commands.describe(
+    model_='The model_x you want to load',
+)
 
-@client.hybrid_command()
-async def load_model(ctx, model_):
-    global model_x
-    model_x = model_
-    await ctx.typing()
-    load_onnx_model(model_x)
-    await ctx.send("Model loaded: " + model_x)
+@client.hybrid_command(with_app_command=True)
+async def download_sd_model(ctx, model_download_input):
+    await ctx.typing()    
+    download_sd_model, model_download_input = model_download_input
+    await ctx.send("Model downloaded: " + model_download_input)
 
-#@client.hybrid_command()
-#async def download_model(ctx, xmodel_name):
-#    await ctx.typing()
-#    download_sd_model(xmodel_name)
-
-# Run the event loop
-
-# Run the event loop
 try:
     loop.run_until_complete(client.start(TOKEN))
 except KeyboardInterrupt:
