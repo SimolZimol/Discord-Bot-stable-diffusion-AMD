@@ -6,7 +6,7 @@ If you discover any security issues or vulnerabilities in Discord-Bot-stable-dif
 
 To report a security issue:
 
-° Contact me on Discord: `simolzimol`
+- Contact me on Discord: `simolzimol`
 
 Please provide the following details when reporting a security issue:
 
