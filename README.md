@@ -1,4 +1,11 @@
-# Discordbot-diffuser (AMD)
+# Discord Bot - Stable Diffusion AMD
+
+This Discord bot, named "Stable Diffusion AMD," is designed to generate images based on user prompts using deep learning models. It utilizes the `discord.py` library and integrates with Hugging Face's model repository for image generation.
+
+
+
+## System Requirements
++ Python 3.7 , 3.8 , 3.9 or 3.10 (https://www.python.org/)
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -7,28 +14,32 @@
 | AMD CPU |:white_check_mark: |
 | Intel CPU |❓ |
 
-## System Requirements
-+ Python 3.7 , 3.8 , 3.9 or 3.10 (https://www.python.org/)
-+ you will need git (https://git-scm.com/downloads)
+## Features
 
-## How to install
+- Generate images based on user-provided prompts.
+- Utilize a variety of deep learning models for image generation.
+- Interact with images through reactions for regenerating them.
+- Check for bot updates using a version comparison mechanism.
 
-At the moment you need to get an ready to use onnx model, put your onnx model in the onnx_model folder. 
-First, the tokens must be inserted in the bot.py file.
-The Discord bot token is the most important part, without it the bot cannot start. The other token for huggingface is only used to download new models and is not needed for the basic functions. After inserting the Discord bot token, you can now execute the start.bat. After installing the requirements, the bot should start and "bot ready" should appear in the console. After the bot has been started, just load the model with the command /load_model modelname or -load_model model-name after this has been done successfully, the bot should now be able to make pictures. 
+## Commands
 
-Information the model must be reloaded every time the bot is restarted (/load_model model-name)
+- `-creatimg [prompt]`: Add an image generation request to the queue.
+- `-load_model [model_name]`: Load a specific deep learning model for image generation.
+- `-download_model [model_name]`: Download a model from Hugging Face's model repository.
+- Reaction "🔄": Regenerate an image based on the original prompt.
 
-if you need help dm me on discord for help (**simolzimol**)
+## Installation and Usage
 
-## How to use
-Commands
-+ -download_model modeladress (coming soon)
-+ -load_model model-name
-+ /load_model model-name
-+ -creatimg "prompt"
-+ /creatimg prompt
+1. Clone the repository: `git clone https://github.com/SimolZimol/Discord-Bot-stable-diffusion-AMD.git`
+2. Configure the `TOKEN` and `token_huggingface` variables in the `bot.py` file.
+3. Open `start.bat` to install required dependencies and start the bot.
+4. Customize your bot's features and appearance as needed.
 
+## Credits
+
+- Developed by [SimolZimol](https://github.com/SimolZimol).
+- Utilizes the [discord.py library](https://github.com/Rapptz/discord.py) for Discord interaction.
+- Integrates with Hugging Face's [model repository](https://huggingface.co/models) for deep learning models.
 
 ![grafik](https://github.com/SimolZimol/Discord-Bot-stable-diffusion-AMD/assets/70102430/069879ac-a172-4bb2-880a-ac0c2bc6b8cf)
 
