@@ -6,6 +6,7 @@ This Discord bot, named "Stable Diffusion AMD," is designed to generate images b
 
 ## System Requirements
 + Python 3.7 , 3.8 , 3.9 or 3.10 (https://www.python.org/)
++ Git (https://git-scm.com/downloads)
 
 | Version | Supported          |
 | ------- | ------------------ |
