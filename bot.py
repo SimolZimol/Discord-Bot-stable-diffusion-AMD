@@ -1,4 +1,4 @@
-__version__ = "0.8.1"
+__version__ = "dev-0.8.6"
 __all__ = ["Discordbot-stable_diffusion (Discord)"]
 __author__ = "SimolZimol"
 __home_page__ = "https://github.com/SimolZimol/Discord-Bot-stable-diffusion-AMD-bot"
@@ -17,17 +17,21 @@ import requests
 from typing import Literal , List
 
 from discord import app_commands
-from image_generator import imgmake, load_onnx_model, download_sd_model
+from image_generator import imgmake, load_onnx_model, download_sd_model , huggingface_login
+import pprint
+import onnxruntime
+
+pprint.pprint(onnxruntime.get_available_providers())
 
 TOKEN = ''
-inputs = ''
+token_huggingface = ''
 
 intents = discord.Intents.default()
 intents.message_content = True
 intents.reactions = True
 python = sys.executable
 
-client = commands.Bot(command_prefix='-', intents=intents)#, owner_id = )
+client = commands.Bot(command_prefix='-', intents=intents)
 load = False
 
 onnx_dir = pathlib.Path().absolute()/'onnx_models'
@@ -82,8 +86,8 @@ async def on_ready():
     print('------')
 
         # Version check
-    version_url = "https://simolzimol.eu/version.txt"  # URL zum Abrufen der aktuellen Version
-    current_version = "beta-0.8.1"  # Aktuelle Version des Bots (Ihre Versionsnummer hier eintragen)
+    version_url = "https://simolzimol.eu/version.txt"
+    current_version = __version__
 
     try:
         response = requests.get(version_url)
@@ -134,14 +138,20 @@ async def load_model(ctx,model_ : str):
     else:
         await ctx.send("Invalid model name. Available models: " + ", ".join(models_list))
 @app_commands.describe(
-    model_='The model_x you want to load',
+    model_='The model_ you want to load',
 )
 
 @client.hybrid_command(with_app_command=True)
-async def download_sd_model(ctx, model_download_input):
+async def download_model(ctx, model_download_input):
     await ctx.typing()    
-    download_sd_model, model_download_input = model_download_input
-    await ctx.send("Model downloaded: " + model_download_input)
+    test_ = huggingface_login(token_huggingface)
+    if test_ == True:
+
+        download_sd_model(model_download_input)
+        await ctx.send("Model downloaded: " + model_download_input)
+    else :
+        await ctx.send("Model download failed")
+
 
 try:
     loop.run_until_complete(client.start(TOKEN))
