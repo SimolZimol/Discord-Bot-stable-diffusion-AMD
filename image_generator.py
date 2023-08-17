@@ -1,4 +1,4 @@
-__version__ = "0.5.9"
+__version__ = "0.6.3"
 __all__ = ["Discordbot-stable_diffusion (Bot part)"]
 __author__ = "SimolZimol"
 __home_page__ = "https://github.com/SimolZimol/Discord-Bot-stable-diffusion-AMD-bot"
@@ -19,6 +19,7 @@ from diffusers import OnnxStableDiffusionPipeline
 from diffusers.schedulers import DDIMScheduler, LMSDiscreteScheduler, PNDMScheduler
 from huggingface_hub import _login
 from huggingface_hub.hf_api import HfApi, HfFolder
+import importlib.util
 
 
 onnx_dir = pathlib.Path().absolute() / 'onnx_models'
@@ -28,8 +29,7 @@ global prompt
 load = False
 python = sys.executable
 
-lms = LMSDiscreteScheduler(beta_start=0.00085, beta_end=0.012, beta_schedule="scaled_linear")
-
+lms = LMSDiscreteScheduler(beta_start=0.00085, beta_end=0.012, beta_schedule="scaled_linear", steps_offset=3)
 def load_onnx_model(model_):
     global pipe
     pipe = OnnxStableDiffusionPipeline.from_pretrained(str('onnx_models/' + model_),
@@ -74,7 +74,7 @@ output_dir = pathlib.Path().absolute()/'output'
 
 def download_sd_model(model_path):
     pip_install('onnx')
-    from src.diffusers.scripts import convert_stable_diffusion_checkpoint_to_onnx
+    from conv import convert_models
     onnx_opset = 14
     onnx_fp16 = False
     try:
@@ -85,14 +85,14 @@ def download_sd_model(model_path):
     if not onnx_dir.exists():
         onnx_dir.mkdir(parents=True, exist_ok=True)
         print(model_name)
-    convert_stable_diffusion_checkpoint_to_onnx.convert_models(model_path, str(onnx_model_dir), onnx_opset, onnx_fp16)
+    convert_models(model_path, str(onnx_model_dir), onnx_opset, onnx_fp16)
     pip_uninstall('onnx')
 
 def huggingface_login(token):
     try:
         #output = _login._login(HfApi(), token = token)
         output = _login._login(token = token, add_to_git_credential = True)
-        return "Login successful."
+        return True
     except Exception as e:
         return str(e)
 
@@ -105,9 +105,12 @@ def pip_install(lib):
     else:
         subprocess.run(f'echo 2', shell=True)
         subprocess.run(f'echo "{python}" -m pip install {lib}', shell=True, capture_output=True)
-        subprocess.run(f'"{python}" -m pip install {lib}', shell=True, capture_output=True)          
+        subprocess.run(f'"{python}" -m pip install {lib}', shell=True, capture_output=True)
 
 def pip_uninstall(lib):
     subprocess.run(f'echo Uninstalling {lib}...', shell=True)
     subprocess.run(f'"{python}" -m pip uninstall -y {lib}', shell=True, capture_output=True)
 
+def is_installed(lib):
+    library =  importlib.util.find_spec(lib)
+    return (library is not None)
