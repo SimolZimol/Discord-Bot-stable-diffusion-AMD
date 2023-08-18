@@ -1,4 +1,4 @@
-__version__ = "dev-0.8.6"
+__version__ = "dev-0.9.1"
 __all__ = ["Discordbot-stable_diffusion (Discord)"]
 __author__ = "SimolZimol"
 __home_page__ = "https://github.com/SimolZimol/Discord-Bot-stable-diffusion-AMD-bot"
@@ -50,6 +50,31 @@ def run_imgmake(prompt):
 
 nest_asyncio.apply()
 
+user_points = {}
+
+# Load user points from a file
+def load_user_points():
+    try:
+        with open("user_points.txt", "r") as file:
+            lines = file.readlines()
+            for line in lines:
+                user_id, points = line.strip().split(":")
+                user_points[int(user_id)] = int(points)
+    except FileNotFoundError:
+        pass
+
+# Save user points to a file
+def save_user_points():
+    with open("user_points.txt", "w") as file:
+        for user_id, points in user_points.items():
+            file.write(f"{user_id}:{points}\n")
+
+# ...
+
+
+
+
+
 # Create a queue to store image generation requests
 image_queue = asyncio.Queue()
 loop = asyncio.get_event_loop()
@@ -84,7 +109,7 @@ async def on_ready():
     print(f'Logged in as: {client.user.name}')
     print(f'Client ID: {client.user.id}')
     print('------')
-
+    load_user_points()
         # Version check
     version_url = "https://simolzimol.eu/version.txt"
     current_version = __version__
@@ -107,12 +132,14 @@ async def on_ready():
 
 @client.hybrid_command(with_app_command=True)
 async def creatimg(ctx, *, prompt):
-    # Add the image generation request to the queue
-    await image_queue.put((prompt, ctx.channel, ctx.author, model_x))
-    await ctx.send("Image generation request added to the queue.")
-@app_commands.describe(
-    prompt='How do you want to look your image for example "house , lake, woods"',
-)
+    user_id = ctx.author.id
+    if user_id in user_points and user_points[user_id] >= 5:
+        await image_queue.put((prompt, ctx.channel, ctx.author, model_x))
+        user_points[user_id] -= 5
+        await ctx.send("Image generation request added to the queue.")
+    else:
+        await ctx.send("You don't have enough points to use this command.")
+
 
 @client.event
 async def on_reaction_add(reaction, user):
@@ -153,9 +180,44 @@ async def download_model(ctx, model_download_input):
         await ctx.send("Model download failed")
 
 
+@client.event
+async def on_shutdown():
+    save_user_points()
+
+
+ 
+@client.hybrid_command()
+async def points(ctx):
+    user_id = ctx.author.id
+    points = user_points.get(user_id, 0)
+    await ctx.send(f"You have {points} points.")
+    
+@client.hybrid_command()
+async def addpoints(ctx, user: discord.User, amount: int):
+    if ctx.message.author.guild_permissions.administrator:
+        user_id = user.id
+        user_points[user_id] = user_points.get(user_id, 0) + amount
+        await ctx.send(f"Added {amount} points to {user.display_name}.")
+    else:
+        ctx.send("You don`t have Permissons")    
+    
+@client.hybrid_command()
+
+async def resetpoints(ctx, user: discord.User):
+    if ctx.message.author.guild_permissions.administrator:
+        user_id = user.id
+        user_points[user_id] = 0
+        await ctx.send(f"Reset points for {user.display_name}.")
+    else:
+        ctx.send("You don`t have Permissons")
+
+
 try:
     loop.run_until_complete(client.start(TOKEN))
 except KeyboardInterrupt:
     loop.run_until_complete(client.logout())
+    save_user_points()
 finally:
     loop.close()
+    save_user_points()
+
