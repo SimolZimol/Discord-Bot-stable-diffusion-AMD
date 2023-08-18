@@ -2,18 +2,18 @@
 
 This Discord bot, named "Stable Diffusion AMD," is designed to generate images based on user prompts using deep learning models. It utilizes the `discord.py` library and integrates with Hugging Face's model repository for image generation.
 
-
+**Please note:** This is a development branch and might contain experimental features or changes.
 
 ## System Requirements
-+ Python 3.7 , 3.8 , 3.9 or 3.10 (https://www.python.org/)
++ Python 3.7, 3.8, 3.9, or 3.10 (https://www.python.org/)
 + Git (https://git-scm.com/downloads)
 
 | Version | Supported          |
 | ------- | ------------------ |
 | AMD GPU | :white_check_mark: |
 | Nvidia GPU  | :x: |
-| AMD CPU |:white_check_mark: |
-| Intel CPU |❓ |
+| AMD CPU | :white_check_mark: |
+| Intel CPU | ❓ |
 
 ## Features
 
@@ -21,12 +21,16 @@ This Discord bot, named "Stable Diffusion AMD," is designed to generate images b
 - Utilize a variety of deep learning models for image generation.
 - Interact with images through reactions for regenerating them.
 - Check for bot updates using a version comparison mechanism.
+- Earn and manage points to use the image generation feature.
 
 ## Commands
 
-- `-creatimg [prompt]`: Add an image generation request to the queue.
+- `-creatimg [prompt]`: Add an image generation request to the queue (Cost: 5 points).
 - `-load_model [model_name]`: Load a specific deep learning model for image generation.
 - `-download_model [model_name]`: Download a model from Hugging Face's model repository.
+- `-points`: Check your available points.
+- `-addpoints [user] [amount]`: Add points to a user's balance (Admin only).
+- `-resetpoints [user]`: Reset a user's points to 0 (Admin only).
 - Reaction "🔄": Regenerate an image based on the original prompt.
 
 ## Installation and Usage
@@ -42,5 +46,4 @@ This Discord bot, named "Stable Diffusion AMD," is designed to generate images b
 - Utilizes the [discord.py library](https://github.com/Rapptz/discord.py) for Discord interaction.
 - Integrates with Hugging Face's [model repository](https://huggingface.co/models) for deep learning models.
 
-![grafik](https://github.com/SimolZimol/Discord-Bot-stable-diffusion-AMD/assets/70102430/069879ac-a172-4bb2-880a-ac0c2bc6b8cf)
-
+![Image](https://github.com/SimolZimol/Discord-Bot-stable-diffusion-AMD/blob/main/assets/70102430/069879ac-a172-4bb2-880a-ac0c2bc6b8cf.png)
