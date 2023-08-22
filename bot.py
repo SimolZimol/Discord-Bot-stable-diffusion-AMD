@@ -69,11 +69,6 @@ def save_user_points():
         for user_id, points in user_points.items():
             file.write(f"{user_id}:{points}\n")
 
-# ...
-
-
-
-
 
 # Create a queue to store image generation requests
 image_queue = asyncio.Queue()
@@ -151,8 +146,14 @@ async def on_reaction_add(reaction, user):
         if message.author == client.user:  # Check if the message was sent by the bot
             content = message.content
             prompt = content[8:content.index('\n')]  # Extract the prompt from the message content
-            await image_queue.put((prompt, message.channel, user, model_x))
-            await message.channel.send("Image generation request added to the queue.")
+            user_id = user.id
+            
+            if user_id in user_points and user_points[user_id] >= 5:
+                await image_queue.put((prompt, message.channel, user, model_x))
+                user_points[user_id] -= 5
+                await message.channel.send("Image generation request added to the queue.")
+            else:
+                await message.channel.send("You don't have enough points to regenerate the image.")
 
 @client.hybrid_command(with_app_command=True)
 async def load_model(ctx,model_ : str):
