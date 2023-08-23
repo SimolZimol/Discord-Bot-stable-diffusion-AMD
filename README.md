@@ -46,4 +46,4 @@ This Discord bot, named "Stable Diffusion AMD," is designed to generate images b
 - Utilizes the [discord.py library](https://github.com/Rapptz/discord.py) for Discord interaction.
 - Integrates with Hugging Face's [model repository](https://huggingface.co/models) for deep learning models.
 
-![Image](https://github.com/SimolZimol/Discord-Bot-stable-diffusion-AMD/blob/main/assets/70102430/069879ac-a172-4bb2-880a-ac0c2bc6b8cf.png)
+![240694665-069879ac-a172-4bb2-880a-ac0c2bc6b8cf](https://github.com/SimolZimol/Discord-Bot-stable-diffusion-AMD/assets/70102430/def2f093-6887-448a-a027-f35852eca307)
