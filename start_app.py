@@ -14,10 +14,8 @@ elif sys.version[:3] == "3.9":
     onnx_nightly = 'ort_nightly_directml-1.13.0.dev20220908001-cp39-cp39-win_amd64.whl'
 elif sys.version[:3] == "3.8":
     onnx_nightly = 'ort_nightly_directml-1.13.0.dev20220908001-cp38-cp38-win_amd64.whl'
-elif sys.version[:3] == "3.7":
-    onnx_nightly = 'ort_nightly_directml-1.13.0.dev20220908001-cp37-cp37-win_amd64.whl'
 else:
-    print('no support python version found, install any of the 3.7, 3.8, 3.9, or 3.10!')
+    print('no support python version found, install any of the 3.8, 3.9, or 3.10!')
 print(f'You are using python version - {sys.version}')
 
 
