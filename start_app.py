@@ -8,17 +8,6 @@ import time
 
 
 python = sys.executable
-if sys.version[:4] == "3.10":
-    onnx_nightly = 'ort_nightly_directml-1.13.0.dev20220908001-cp310-cp310-win_amd64.whl'
-elif sys.version[:3] == "3.9":
-    onnx_nightly = 'ort_nightly_directml-1.13.0.dev20220908001-cp39-cp39-win_amd64.whl'
-elif sys.version[:3] == "3.8":
-    onnx_nightly = 'ort_nightly_directml-1.13.0.dev20220908001-cp38-cp38-win_amd64.whl'
-else:
-    print('no support python version found, install any of the 3.8, 3.9, or 3.10!')
-print(f'You are using python version - {sys.version}')
-
-
 
 required_lib = ['torch', 'onnxruntime', 'transformers', 'scipy', 'ftfy', 'gradio']
 standard_onnx = 'onnx'
