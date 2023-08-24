@@ -21,11 +21,11 @@ This Discord bot, named "Stable Diffusion AMD," is designed to generate images b
 - Utilize a variety of deep learning models for image generation.
 - Interact with images through reactions for regenerating them.
 - Check for bot updates using a version comparison mechanism.
-- Earn and manage points to use the image generation feature.
+- Manage points to use the image generation feature.
 
 ## Commands
 
-- `-creatimg [prompt]`: Add an image generation request to the queue (Cost: 5 points).
+- `-creatimg [prompt] [negative_prompt]`: Add an image generation request to the queue (Cost: 5 points).
 - `-load_model [model_name]`: Load a specific deep learning model for image generation.
 - `-download_model [model_name]`: Download a model from Hugging Face's model repository.
 - `-points`: Check your available points.
