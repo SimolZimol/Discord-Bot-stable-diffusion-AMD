@@ -1,4 +1,5 @@
 # Made by https://github.com/pythoninoffice
+#adjusted by SimolZimol
 import importlib.util
 import platform
 import subprocess
@@ -7,13 +8,15 @@ import pathlib
 import time
 
 
+
 python = sys.executable
 
-required_lib = ['torch', 'onnxruntime', 'transformers', 'scipy', 'ftfy', 'gradio']
+required_lib = ['torch', 'onnxruntime', 'transformers', 'scipy', 'ftfy', 'discord.py']
 standard_onnx = 'onnx'
 repositories = pathlib.Path().absolute() / 'repositories'
 git_repos = ['https://github.com/huggingface/diffusers']
 requirements = pathlib.Path().absolute()  /'requirements.txt'
+
 
 
 def pip_install(lib):
@@ -21,6 +24,7 @@ def pip_install(lib):
     subprocess.run(f'echo "{python}" -m pip install {lib}', shell=True)
     subprocess.run(f'"{python}" -m pip install {lib}', shell=True, capture_output=True)
     subprocess.run(f'"{python}" -m pip install {lib}', shell=True, capture_output=True)
+
 
 def pip_install_requirements():
     subprocess.run(f'echo installing requirements', shell=True)
@@ -49,10 +53,7 @@ def git_clone(repo_url, repo_name):
  #   if not is_installed(lib):
  #       pip_install(lib)
 pip_install_requirements()
-subprocess.run(f'"{python}" -m pip install repositories/{onnx_nightly}', shell=True)
 subprocess.run('echo Done installing', shell=True)
-
-
 
 import bot
 bot()
