@@ -1,11 +1,10 @@
-__version__ = "0.6.3"
+__version__ = "0.6.8"
 __all__ = ["Discordbot-stable_diffusion (Bot part)"]
 __author__ = "SimolZimol"
 __home_page__ = "https://github.com/SimolZimol/Discord-Bot-stable-diffusion-AMD-bot"
 
 import os, sys
 import asyncio
-#import aiohttp
 from huggingface_hub import _login
 import pathlib
 import hashlib
@@ -39,13 +38,13 @@ def load_onnx_model(model_):
     load = True 
     print("ONNX pipeline is loadable")
 
-async def imgmake(prompt):  
+async def imgmake(prompt, negativeprompt: str = None):  
 
     if (load == True):
             
         generator = np.random.RandomState(random.randint(0,4294967295))
         image = pipe(prompt,
-                negative_prompt = None,
+                negative_prompt = negativeprompt,
                 num_inference_steps=25,
                 height = 512,
                 width = 512,
